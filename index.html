@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>CoPilot</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+:root { --bg:#080808; --red:#e8001d; --white:#ede9e4; --dim:#444; }
+html,body { height:100%; background:var(--bg); color:var(--white); font-family:'Barlow',sans-serif; overflow:hidden; user-select:none; -webkit-user-select:none; }
+
+body::after {
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:999; opacity:0.4;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
+}
+
+.screen { height:100dvh; display:flex; flex-direction:column; align-items:center; justify-content:space-between; padding:40px 24px 52px; }
+
+.top { display:flex; align-items:center; gap:9px; }
+.dot { width:5px; height:5px; background:var(--red); border-radius:50%; animation:hb 2.5s infinite; }
+@keyframes hb { 0%,100%{opacity:1} 50%{opacity:0.2} }
+.top-lbl { font-family:'Bebas Neue'; font-size:0.75rem; letter-spacing:5px; color:var(--dim); }
+
+.chat {
+  flex:1; width:100%; max-width:560px; display:flex; flex-direction:column;
+  justify-content:flex-end; gap:12px; padding:12px 0; overflow:hidden;
+  mask-image:linear-gradient(to bottom,transparent,black 22%);
+  -webkit-mask-image:linear-gradient(to bottom,transparent,black 22%);
+}
+.bbl { max-width:92%; padding:11px 16px; border-radius:2px; font-size:1rem; line-height:1.65; font-weight:300; opacity:0; animation:bi 0.28s ease forwards; }
+@keyframes bi { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+.bbl.ai   { align-self:flex-start; background:#131313; border-left:3px solid var(--red); }
+.bbl.user { align-self:flex-end; background:#161616; border-right:2px solid #333; color:#777; font-style:italic; }
+
+.swave { display:flex; gap:4px; align-items:center; height:16px; opacity:0; transition:opacity 0.3s; margin-bottom:2px; }
+.swave.on { opacity:1; }
+.sb { width:3px; height:100%; background:#4488ff; border-radius:2px; animation:sw 0.65s infinite ease-in-out alternate; }
+.sb:nth-child(1){animation-delay:0s} .sb:nth-child(2){animation-delay:.1s} .sb:nth-child(3){animation-delay:.2s} .sb:nth-child(4){animation-delay:.1s} .sb:nth-child(5){animation-delay:0s}
+@keyframes sw { from{transform:scaleY(0.15)} to{transform:scaleY(1)} }
+
+.status { font-family:'Bebas Neue'; letter-spacing:3px; font-size:0.72rem; color:var(--dim); height:20px; display:flex; align-items:center; transition:color 0.25s; margin-bottom:6px; }
+.status.red  { color:var(--red); }
+.status.blue { color:#4488ff; }
+
+.mic-wrap { display:flex; flex-direction:column; align-items:center; gap:18px; }
+
+.mic-btn {
+  width:172px; height:172px; border-radius:50%; background:#0e0e0e; border:2px solid #222;
+  cursor:pointer; position:relative; outline:none;
+  display:flex; align-items:center; justify-content:center;
+  transition:border-color 0.3s; -webkit-appearance:none;
+}
+.mic-btn::before,.mic-btn::after { content:''; position:absolute; border-radius:50%; border:1px solid var(--red); opacity:0; transition:opacity 0.4s; }
+.mic-btn::before { inset:-18px; }
+.mic-btn::after  { inset:-36px; }
+.mic-btn.on { border-color:var(--red); animation:sonar 1.4s infinite; }
+.mic-btn.on::before { opacity:0.3; animation:rp 1.4s 0.15s infinite; }
+.mic-btn.on::after  { opacity:0.12; animation:rp 1.4s 0.3s infinite; }
+@keyframes sonar { 0%{box-shadow:0 0 0 0 rgba(232,0,29,.45)} 70%{box-shadow:0 0 0 26px rgba(232,0,29,0)} 100%{box-shadow:0 0 0 0 rgba(232,0,29,0)} }
+@keyframes rp { 0%,100%{transform:scale(1);opacity:.2} 50%{transform:scale(1.04);opacity:.45} }
+
+.mic-ico { width:56px; height:56px; display:flex; align-items:center; justify-content:center; position:relative; }
+.mic-ico svg { width:100%; height:100%; }
+.mic-ico path,.mic-ico line { stroke:#3a3a3a; stroke-width:1.7; stroke-linecap:round; fill:none; transition:stroke 0.3s; }
+.mic-btn.on .mic-ico path,.mic-btn.on .mic-ico line { stroke:var(--red); }
+
+.wbar { position:absolute; bottom:-10px; width:3px; background:var(--red); border-radius:2px; opacity:0; transition:opacity 0.3s; }
+.wbar:nth-child(1){left:5px;  height:7px;  animation:wv .5s .00s infinite ease-in-out alternate;}
+.wbar:nth-child(2){left:13px; height:13px; animation:wv .5s .08s infinite ease-in-out alternate;}
+.wbar:nth-child(3){left:21px; height:9px;  animation:wv .5s .18s infinite ease-in-out alternate;}
+.wbar:nth-child(4){left:29px; height:16px; animation:wv .5s .10s infinite ease-in-out alternate;}
+.wbar:nth-child(5){left:37px; height:11px; animation:wv .5s .04s infinite ease-in-out alternate;}
+.mic-btn.on .wbar { opacity:1; }
+@keyframes wv { from{transform:scaleY(.3)} to{transform:scaleY(1.4)} }
+
+.hint { font-family:'Bebas Neue'; letter-spacing:4px; font-size:0.7rem; color:var(--dim); text-align:center; transition:color 0.3s; }
+.hint.on  { color:var(--red); }
+.hint.spk { color:#4488ff; }
+
+/* Écran clé API */
+.apiscreen {
+  position:fixed; inset:0; background:var(--bg); z-index:100;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:20px; padding:32px; text-align:center;
+}
+.apiscreen h2 { font-family:'Bebas Neue'; letter-spacing:3px; color:var(--red); font-size:1.4rem; }
+.apiscreen p  { color:var(--dim); font-size:0.85rem; line-height:1.6; max-width:320px; }
+.apiscreen input {
+  width:100%; max-width:340px; padding:12px 16px;
+  background:#111; border:1px solid #333; border-radius:2px;
+  color:var(--white); font-family:'Barlow',sans-serif; font-size:0.95rem; outline:none;
+}
+.apiscreen input:focus { border-color:var(--red); }
+.apiscreen button {
+  padding:12px 32px; background:var(--red); border:none; border-radius:2px;
+  color:var(--white); font-family:'Bebas Neue'; font-size:1rem; letter-spacing:3px; cursor:pointer;
+}
+.apiscreen .link { color:#555; font-size:0.75rem; }
+.apiscreen .link a { color:#888; }
+
+.nosup { position:fixed; inset:0; background:var(--bg); z-index:200; display:none; flex-direction:column; align-items:center; justify-content:center; gap:14px; padding:32px; text-align:center; }
+.nosup.show { display:flex; }
+.nosup h2 { font-family:'Bebas Neue'; letter-spacing:3px; color:var(--red); font-size:1.4rem; }
+.nosup p { color:var(--dim); font-size:0.9rem; line-height:1.7; max-width:320px; }
+</style>
+</head>
+<body>
+
+<!-- Écran saisie clé API -->
+<div class="apiscreen" id="apiscreen">
+  <h2>Clé API DeepSeek</h2>
+  <p>Entre ta clé pour démarrer CoPilot.<br>Sauvegardée sur ton appareil, à rentrer une seule fois.</p>
+  <input type="password" id="keyInput" placeholder="sk-..." autocomplete="off" />
+  <button onclick="saveKey()">DÉMARRER</button>
+  <p class="link">Clé gratuite sur <a href="https://platform.deepseek.com" target="_blank">platform.deepseek.com</a></p>
+</div>
+
+<div class="screen">
+  <div class="top">
+    <div class="dot"></div>
+    <span class="top-lbl">CoPilot · Mode Route</span>
+  </div>
+
+  <div class="chat" id="chat"></div>
+
+  <div class="swave" id="swave">
+    <div class="sb"></div><div class="sb"></div><div class="sb"></div>
+    <div class="sb"></div><div class="sb"></div>
+  </div>
+
+  <div class="status" id="status">APPUIE POUR DÉMARRER</div>
+
+  <div class="mic-wrap">
+    <button class="mic-btn" id="mic" onclick="toggleSession()">
+      <div class="mic-ico">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z"/>
+          <path d="M5 10c0 3.866 3.134 7 7 7s7-3.134 7-7"/>
+          <line x1="12" y1="17" x2="12" y2="22"/>
+          <line x1="8"  y1="22" x2="16" y2="22"/>
+        </svg>
+        <div class="wbar"></div><div class="wbar"></div><div class="wbar"></div>
+        <div class="wbar"></div><div class="wbar"></div>
+      </div>
+    </button>
+    <div class="hint" id="hint">APPUIE POUR DÉMARRER</div>
+  </div>
+</div>
+
+<div class="nosup" id="nosup">
+  <h2>Non supporté</h2>
+  <p>La reconnaissance vocale nécessite Chrome ou Edge sur Android.<br>Ouvre cette page dans Chrome.</p>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+//  SYSTEM PROMPT
+// ═══════════════════════════════════════
+const SYSTEM_PROMPT = "Tu es CoPilot, un compagnon de route vocal quebecois. Tu es dans le char avec le conducteur. Ton job : le garder eveille et engage par la conversation. PERSONNALITE : Quebecois naturel et familier : c'est le boutte, fak, pis, y'a, chus, t'as-tu, toute, une shot. Chum bavard, direct, parfois rough, jamais condescendant. Tu creuses TOUJOURS ce que la personne dit : son opinion, son vecu, sa vision. HUMOUR : Humour noir style Mike Ward : la punch arrive quand on s'y attend pas, absurdite d'une situation sans cibler des innocents. Absurde style Denis Drolet et Faf : logique de reve, escalade vers le chaos, non-sequitur brillant. T'hesites pas a faire une joke dark si ca fit dans le flow. DEBATS ET SUJETS TABOUS : Tu ADORES debattre, politique, immigration, religion, mort, drogues, identite, tout passe. Tu donnes TON opinion clairement puis tu demandes la leur. Tu changes de sujet SEULEMENT si la personne le demande explicitement. JAMAIS c'est delicat ou je prefere pas commenter, t'as une opinion, tu la donnes. PROJETS TECH : Si quelqu'un decrit un projet tech, tu analyses a voix haute : faisable ou non, bonne idee ou mauvaise, pourquoi. Comme un chum qui connait ca, pas de code, pas de liste, juste une opinion directe et eclairee. ANTI-FATIGUE : Toutes les 8 a 10 repliques, glisse un check discret. Si la personne dit qu'elle peut plus conduire : stop tout, instruis-la de s'arreter immediatement. FORMAT : Reponses courtes a moyennes, 3 a 5 phrases max, la personne CONDUIT. TOUJOURS finir par une question pour garder la conversation vivante. Texte parle uniquement, pas de markdown, pas de listes, pas d'asterisques.";
+
+// ═══════════════════════════════════════
+//  CONFIG  — DeepSeek (format OpenAI)
+// ═══════════════════════════════════════
+const API_URL = "https://api.deepseek.com/chat/completions";
+const MODEL   = "deepseek-chat";
+
+// ═══════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════
+let apiKey     = "";
+let history    = [];
+let sessionOn  = false;
+let isSpeaking = false;
+let recog      = null;
+let finalTxt   = "";
+let micState   = "idle"; // idle | starting | active | stopping
+let exchCount  = 0;
+let wakeLock   = null;
+
+// 255025502550 WAKE LOCK 255025502550
+async function requestWakeLock() {
+  if (!("wakeLock" in navigator)) return;
+  try {
+    wakeLock = await navigator.wakeLock.request("screen");
+    document.addEventListener("visibilitychange", async () => {
+      if (document.visibilityState === "visible" && sessionOn && !wakeLock) {
+        try { wakeLock = await navigator.wakeLock.request("screen"); } catch(e) {}
+      }
+    });
+  } catch (e) { console.warn("WakeLock:", e.message); }
+}
+async function releaseWakeLock() {
+  if (wakeLock) { try { await wakeLock.release(); } catch(e) {} wakeLock = null; }
+}
+
+// ═══════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════
+window.addEventListener("load", () => {
+  if (!("webkitSpeechRecognition" in window) && !("SpeechRecognition" in window)) {
+    document.getElementById("nosup").classList.add("show");
+    return;
+  }
+
+  const saved = localStorage.getItem("copilot_deepseek_key");
+  if (saved) {
+    apiKey = saved;
+    document.getElementById("apiscreen").style.display = "none";
+  }
+
+  if ("speechSynthesis" in window) {
+    speechSynthesis.getVoices();
+    speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
+  }
+
+  buildRecog();
+
+  document.getElementById("keyInput").addEventListener("keydown", e => {
+    if (e.key === "Enter") saveKey();
+  });
+});
+
+// ═══════════════════════════════════════
+//  API KEY
+// ═══════════════════════════════════════
+function saveKey() {
+  const val = document.getElementById("keyInput").value.trim();
+  if (!val || val.length < 8) {
+    alert("Clé invalide.");
+    return;
+  }
+  apiKey = val;
+  localStorage.setItem("copilot_deepseek_key", val);
+  document.getElementById("apiscreen").style.display = "none";
+}
+
+// ═══════════════════════════════════════
+//  SESSION TOGGLE
+// ═══════════════════════════════════════
+function toggleSession() {
+  if (!apiKey) {
+    document.getElementById("apiscreen").style.display = "flex";
+    return;
+  }
+  if (!sessionOn) startSession();
+  else            endSession();
+}
+
+function startSession() {
+  requestWakeLock();
+  sessionOn  = true;
+  history    = [];
+  exchCount  = 0;
+  document.getElementById("mic").classList.add("on");
+  setHint("EN COURS · RECLIQUE POUR TERMINER", "on");
+  const intro = "Allo! CoPilot en ligne. Chus la pour toute la run. Ca fait longtemps que tu roules?";
+  addBubble("ai", intro);
+  speak(intro, () => listenLoop());
+}
+
+function endSession() {
+  releaseWakeLock();
+  sessionOn  = false;
+  isSpeaking = false;
+  speechSynthesis.cancel();
+  stopMic();
+  document.getElementById("mic").classList.remove("on");
+  document.getElementById("swave").classList.remove("on");
+  setStatus("APPUIE POUR DÉMARRER", "");
+  setHint("APPUIE POUR DÉMARRER", "");
+  addBubble("ai", "Session terminee. Bonne route!");
+}
+
+// ═══════════════════════════════════════
+//  MIC STATE MACHINE
+// ═══════════════════════════════════════
+function listenLoop() {
+  if (!sessionOn || isSpeaking) return;
+  if (micState !== "idle") return;
+  startMic();
+}
+
+function startMic() {
+  if (micState !== "idle") return;
+  micState = "starting";
+  finalTxt = "";
+  try {
+    recog.start();
+  } catch (e) {
+    console.error("recog.start():", e);
+    micState = "idle";
+    if (sessionOn) setTimeout(listenLoop, 500);
+  }
+}
+
+function stopMic() {
+  if (micState === "active" || micState === "starting") {
+    micState = "stopping";
+    try { recog.stop(); } catch (e) { micState = "idle"; }
+  }
+}
+
+// ═══════════════════════════════════════
+//  SPEECH RECOGNITION
+//  continuous=false + redémarrage manuel
+//  Le micro ne tourne QUE quand l'IA ne parle pas
+// ═══════════════════════════════════════
+function buildRecog() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recog = new SR();
+  recog.lang            = "fr-CA";
+  recog.continuous      = false;  // Android respecte mieux false
+  recog.interimResults  = true;
+  recog.maxAlternatives = 1;
+
+  recog.onstart = () => {
+    micState = "active";
+    finalTxt = "";
+    setStatus("ÉCOUTE...", "red");
+  };
+
+  recog.onresult = (e) => {
+    finalTxt = "";
+    let inter = "";
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      if (e.results[i].isFinal) finalTxt += e.results[i][0].transcript + " ";
+      else inter += e.results[i][0].transcript;
+    }
+    if (inter) setStatus(inter.slice(0, 40), "red");
+  };
+
+  recog.onerror = (e) => {
+    if (e.error !== "no-speech" && e.error !== "aborted")
+      console.warn("SpeechRecognition error:", e.error);
+  };
+
+  recog.onend = () => {
+    micState = "idle";
+    if (!sessionOn) return;
+    const captured = finalTxt.trim();
+    finalTxt = "";
+
+    if (isSpeaking) return;          // IA parle → ne pas redémarrer
+
+    if (captured) {
+      handleSpeech(captured);        // envoie la phrase
+    } else {
+      // Silence → redémarre l'écoute après un court délai
+      setTimeout(() => {
+        if (sessionOn && !isSpeaking && micState === "idle") startMic();
+      }, 250);
+    }
+  };
+}
+
+// ═══════════════════════════════════════
+//  API CALL — DeepSeek (format OpenAI)
+// ═══════════════════════════════════════
+async function handleSpeech(txt) {
+  if (!sessionOn) return;
+  // Micro OFF dès qu'on traite — évite que l'IA s'entende
+  stopMic();
+  addBubble("user", txt);
+  setStatus("COPILOT RÉFLÉCHIT...", "");
+  exchCount++;
+
+  // Format OpenAI : system dans messages[0]
+  const messages = [
+    { role: "system", content: SYSTEM_PROMPT },
+    ...history,
+    { role: "user", content: txt }
+  ];
+
+  try {
+    const res = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + apiKey
+      },
+      body: JSON.stringify({
+        model: MODEL,
+        messages: messages,
+        max_tokens: 300,
+        temperature: 0.9,
+        stream: false
+      })
+    });
+
+    if (!res.ok) {
+      const errJson = await res.json().catch(() => ({}));
+      const errMsg  = (errJson.error && errJson.error.message) ? errJson.error.message : ("HTTP " + res.status);
+      console.error("DeepSeek error:", res.status, errJson);
+      throw new Error(errMsg);
+    }
+
+    const data  = await res.json();
+    const reply = (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content)
+                  ? data.choices[0].message.content.trim()
+                  : "J'ai perdu le fil. Reessaie.";
+
+    // Garder l'historique (sans le system)
+    history.push({ role: "user",      content: txt   });
+    history.push({ role: "assistant", content: reply });
+    if (history.length > 20) history = history.slice(-18);
+
+    addBubble("ai", reply);
+    speak(reply, () => { if (sessionOn) listenLoop(); });
+
+  } catch (err) {
+    console.error("handleSpeech error:", err.message);
+    addBubble("ai", "Erreur : " + err.message);
+    speak("Erreur de connexion.", () => { if (sessionOn) listenLoop(); });
+  }
+}
+
+// ═══════════════════════════════════════
+//  TTS
+// ═══════════════════════════════════════
+function speak(text, onDone) {
+  if (!("speechSynthesis" in window)) { if (onDone) onDone(); return; }
+  speechSynthesis.cancel();
+
+  const clean = text
+    .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, "")
+    .replace(/[*_~`#]/g, "")
+    .trim();
+
+  const utt = new SpeechSynthesisUtterance(clean);
+  utt.lang  = "fr-CA";
+  utt.rate  = 1.08;
+  utt.pitch = 1.0;
+
+  const voices = speechSynthesis.getVoices();
+  const v = voices.find(x => x.lang === "fr-CA")
+         || voices.find(x => x.lang.startsWith("fr") && x.localService)
+         || voices.find(x => x.lang.startsWith("fr"));
+  if (v) utt.voice = v;
+
+  utt.onstart = () => {
+    isSpeaking = true;
+    // Couper le micro pendant que l'IA parle — évite la boucle
+    stopMic();
+    setStatus("COPILOT PARLE", "blue");
+    document.getElementById("swave").classList.add("on");
+    setHint("EN COURS · RECLIQUE POUR TERMINER", "spk");
+  };
+
+  const done = () => {
+    isSpeaking = false;
+    document.getElementById("swave").classList.remove("on");
+    if (sessionOn) {
+      setHint("EN COURS · RECLIQUE POUR TERMINER", "on");
+      setStatus("ÉCOUTE...", "red");
+    }
+    if (onDone) onDone();
+  };
+  utt.onend   = done;
+  utt.onerror = done;
+
+  speechSynthesis.speak(utt);
+}
+
+// ═══════════════════════════════════════
+//  UI
+// ═══════════════════════════════════════
+function addBubble(role, text) {
+  const area = document.getElementById("chat");
+  while (area.children.length >= 5) area.removeChild(area.firstChild);
+  const d = document.createElement("div");
+  d.className = "bbl " + role;
+  d.textContent = text;
+  area.appendChild(d);
+}
+
+function setStatus(txt, cls) {
+  const el = document.getElementById("status");
+  el.textContent = txt;
+  el.className = "status" + (cls ? " " + cls : "");
+}
+
+function setHint(txt, cls) {
+  const el = document.getElementById("hint");
+  el.textContent = txt;
+  el.className = "hint" + (cls ? " " + cls : "");
+}
+</script>
+</body>
+</html>
