@@ -1,44 +1,70 @@
+![CoPilote - Compagnon vocal de route](assets/banner.png)
+
 # CoPilote
 
-![Bannière du site](https://raw.githubusercontent.com/richerraill/CoPilote/main/assets/banner.png)  
-*(Ajoute une belle image de capture d'écran ou logo en haut – remplace le lien par le tien)*
+**CoPilote** est ton chum IA vocal québécois qui ride shotgun avec toi dans le char.  
+Il te garde éveillé sur la route avec du jasage naturel, de l'humour rough, des débats sans filtre et des checks discrets anti-dodo.  
+Construit 100% web (HTML/CSS/JS) avec reconnaissance vocale + synthèse vocale du navigateur + DeepSeek pour le cerveau.
 
-**CoPilote** est mon site personnel / portfolio / [précise ce que c'est : vitrine de projets, blog tech, démo d'IA, etc.].  
-Construit avec HTML, CSS, JavaScript [et ce que tu utilises : Tailwind, Bootstrap, React, etc.].  
-Hébergé gratuitement grâce à **GitHub Pages** → https://richerraill.github.io/CoPilote/
+Ton site live :  
+👉 https://richerraill.github.io/CoPilote/
 
 ## Aperçu
 
-Voici à quoi ressemble le site :
+Voici l'interface en action (mode sombre, gros bouton micro qui pulse en rouge quand il écoute/parle) :
 
-![Capture d'écran du site](https://raw.githubusercontent.com/richerraill/CoPilote/main/assets/screenshot.png)  
-*(Upload 1-3 captures d'écran dans un dossier /assets/ ou /images/ et mets les liens ici – ça vend direct le projet)*
+![Capture d'écran de CoPilote - Interface principale](assets/screenshot.png)
 
-## Fonctionnalités
+- Écran de démarrage avec saisie de clé API DeepSeek (sauvegardée localement)  
+- Chat vocal en continu (tu parles, il répond avec une voix québécoise réaliste)  
+- Animations sonar + wave pour le feeling "live"
 
-- Design responsive (mobile-first)
-- Navigation fluide
-- [Section projets / réalisations]
-- [Formulaire de contact ou lien LinkedIn]
-- Dark mode / thème personnalisé (si tu l'as)
-- Animations légères / interactions modernes
+## Fonctionnalités principales
+
+- **Voix québécoise naturelle** : accent, expressions (fak, chus, une shot, boutte, etc.)  
+- **Personnalité** : chum direct, humour noir/absurde (style Mike Ward / Denis Drolet), adore débattre politique/religion/tabous  
+- **Anti-fatigue** : check discret toutes les ~8-10 échanges, alerte sérieuse si tu dis que t'es trop fatigué  
+- **Reconnaissance vocale** : Web Speech API (meilleur sur Chrome/Edge Android)  
+- **Synthèse vocale** : voix fr-CA réaliste (rate/pitch ajustés pour sonner naturel)  
+- **Session persistante** : historique court pour garder le contexte  
+- **Wake Lock** : écran reste allumé pendant la session  
 
 ## Technologies utilisées
 
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
 ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
-<!-- Ajoute les tiennes : Tailwind, React, etc. → va sur https://shields.io/ pour en générer -->
+![DeepSeek](https://img.shields.io/badge/DeepSeek-000000?style=for-the-badge&logo=ai&logoColor=white)
+![Web Speech API](https://img.shields.io/badge/Web%20Speech%20API-4285F4?style=for-the-badge&logo=google&logoColor=white)
 
-- HTML5 + CSS3 + Vanilla JS (ou framework que tu utilises)
-- Déploiement automatique via GitHub Pages
-- [Autres : fonts Google, icons Font Awesome, etc.]
+- HTML + CSS pur (dark mode, animations CSS)  
+- JavaScript vanilla (pas de framework)  
+- DeepSeek API pour les réponses intelligentes  
+- Web Speech Recognition + SpeechSynthesis (navigateur natif)
 
-## Comment voir / tester le site
+## Comment l'utiliser
 
-1. Visite directement → https://richerraill.github.io/CoPilote/
-2. Clone le repo et ouvre `index.html` en local :
-   ```bash
-   git clone https://github.com/richerraill/CoPilote.git
-   cd CoPilote
-   # Ouvre index.html avec ton navigateur
+1. Va sur https://richerraill.github.io/CoPilote/  
+2. Entre ta clé API DeepSeek (gratuite sur https://platform.deepseek.com)  
+3. Appuie sur le gros bouton micro → CoPilot se réveille et commence à jaser  
+4. Parle normalement (français québécois recommandé pour le fun)  
+5. Reclique pour arrêter la session quand tu arrives
+
+**Note** : Meilleur rendu sur **Chrome ou Edge mobile** (Android). Safari/iOS support partiel pour la reco vocale.
+
+## Contribuer ou me parler
+
+Bug ? Idée d'amélioration ? Nouvelle joke dark à tester ?  
+Ouvre une **Issue** ou fork le repo !
+
+Tu peux aussi me contacter sur [LinkedIn](https://linkedin.com/in/ton-profil) ou ailleurs.
+
+## Licence
+
+MIT License – fais-en ce que tu veux (mais garde le crédit si tu le partages svp).  
+Voir le fichier [LICENSE](LICENSE) pour les détails.
+
+---
+
+Bonne route, pis reste éveillé ! 🚗🔊  
+⭐ Si ça te plaît, mets une petite étoile au repo !
