@@ -7,7 +7,7 @@ Il te garde éveillé sur la route avec du jasage naturel, de l'humour rough, de
 Construit 100% web (HTML/CSS/JS) avec reconnaissance vocale + synthèse vocale du navigateur + DeepSeek pour le cerveau.
 
 Ton site live :  
-👉 https://richerraill.github.io/CoPilote/
+👉  https://richerrail.github.io/CoPilote/
 
 ## Aperçu
 
@@ -17,7 +17,6 @@ Voici l'interface en action (mode sombre, gros bouton micro qui pulse en rouge q
 
 - Écran de démarrage avec saisie de clé API DeepSeek (sauvegardée localement)  
 - Chat vocal en continu (tu parles, il répond avec une voix québécoise réaliste)  
-- Animations sonar + wave pour le feeling "live"
 
 ## Fonctionnalités principales
 
@@ -57,7 +56,7 @@ Voici l'interface en action (mode sombre, gros bouton micro qui pulse en rouge q
 Bug ? Idée d'amélioration ? Nouvelle joke dark à tester ?  
 Ouvre une **Issue** ou fork le repo !
 
-Tu peux aussi me contacter sur [LinkedIn](https://linkedin.com/in/ton-profil) ou ailleurs.
+Tu peux aussi me contacter sur [Telegram][@RicherRail](https://t.me/RicherRail) ou ailleurs.
 
 ## Licence
 
