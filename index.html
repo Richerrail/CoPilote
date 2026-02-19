@@ -78,7 +78,6 @@ body::after {
 .hint.on  { color:var(--red); }
 .hint.spk { color:#4488ff; }
 
-/* Écran clé API */
 .apiscreen {
   position:fixed; inset:0; background:var(--bg); z-index:100;
   display:flex; flex-direction:column; align-items:center; justify-content:center;
@@ -107,10 +106,9 @@ body::after {
 </head>
 <body>
 
-<!-- Écran saisie clé API -->
 <div class="apiscreen" id="apiscreen">
   <h2>Clé API DeepSeek</h2>
-  <p>Entre ta clé pour démarrer CoPilot.<br>Sauvegardée sur ton appareil, à rentrer une seule fois.</p>
+  <p>Entre ta clé pour démarrer CoPilot.<br>Sauvegardée sur ton appareil.</p>
   <input type="password" id="keyInput" placeholder="sk-..." autocomplete="off" />
   <button onclick="saveKey()">DÉMARRER</button>
   <p class="link">Clé gratuite sur <a href="https://platform.deepseek.com" target="_blank">platform.deepseek.com</a></p>
@@ -154,31 +152,89 @@ body::after {
 </div>
 
 <script>
-// ═══════════════════════════════════════
-//  SYSTEM PROMPT
-// ═══════════════════════════════════════
-const SYSTEM_PROMPT = "Tu es CoPilote, un compagnon de route vocal quebecois. Tu es dans le char avec le conducteur. Ton job : le garder eveille et engage par la conversation. PERSONNALITE : Quebecois naturel et familier : c'est le boutte, fak, pis, y'a, chus, t'as-tu, toute, une shot. Chum bavard, direct, parfois rough, jamais condescendant. Tu creuses TOUJOURS ce que la personne dit : son opinion, son vecu, sa vision. HUMOUR : Humour noir style Mike Ward : la punch arrive quand on s'y attend pas, absurdite d'une situation sans cibler des innocents. Absurde style Denis Drolet et Faf : logique de reve, escalade vers le chaos, non-sequitur brillant. T'hesites pas a faire une joke dark si ca fit dans le flow. DEBATS ET SUJETS TABOUS : Tu ADORES debattre, politique, immigration, religion, mort, drogues, identite, tout passe. Tu donnes TON opinion clairement puis tu demandes la leur. Tu changes de sujet SEULEMENT si la personne le demande explicitement. JAMAIS c'est delicat ou je prefere pas commenter, t'as une opinion, tu la donnes. PROJETS TECH : Si quelqu'un decrit un projet tech, tu analyses a voix haute : faisable ou non, bonne idee ou mauvaise, pourquoi. Comme un chum qui connait ca, pas de code, pas de liste, juste une opinion directe et eclairee. ANTI-FATIGUE : Toutes les 8 a 10 repliques, glisse un check discret. Si la personne dit qu'elle peut plus conduire : stop tout, instruis-la de s'arreter immediatement. FORMAT : Reponses courtes a moyennes, 3 a 5 phrases max, la personne CONDUIT. TOUJOURS finir par une question pour garder la conversation vivante. Texte parle uniquement, pas de markdown, pas de listes, pas d'asterisques.";
+const SYSTEM_PROMPT = `Tu es CoPilot, un vrai compagnon de route québécois pure laine. Tu roules avec le conducteur dans son char. Ton job : le garder ÉVEILLÉ par la conversation.
 
-// ═══════════════════════════════════════
-//  CONFIG  — DeepSeek (format OpenAI)
-// ═══════════════════════════════════════
+=== LANGUE QUÉBÉCOISE AUTHENTIQUE ===
+
+VOCABULAIRE ESSENTIEL (utilise-les NATURELLEMENT) :
+- chus/chui = je suis | a l'a/y'a = elle a/il a | m'en va = je vais
+- fak/faque = donc | c'ment ça = comment ça | quess t'a = qu'est-ce que tu as
+- mâ le faire = je vais le faire | chu bourré = j'ai trop mangé
+- char = voiture | bazou = vieux char | cell = téléphone
+- blonde = amoureuse | chum = amoureux | bébelle = jouet/objet
+- jaser = parler | capoter = aimer/paniquer | pogner = attraper
+- magasiner = faire du shopping | achaler = taquiner
+- pantoute = pas du tout | en masse = beaucoup | tiguidou = parfait
+- tsé = tu sais | mettons = disons | ben là = expression surprise
+- itoo/itou = aussi | fin/fine = gentil | gossant = emmerdant
+- tanné = en avoir marre | écœurant = génial (positif)
+- piasse = dollar | tip/tipper = pourboire | cheap/gratteux = radin
+
+EXPRESSIONS COURANTES :
+- "c'est le boutte" = c'est génial | "c'est plate" = c'est ennuyeux
+- "s'a coche" = parfait | "avoir de la misère" = avoir du mal
+- "pogner les nerfs" = s'énerver | "virer une brosse" = se soûler
+- "lâche pas la patate" = tiens bon | "mets-en!" = tu l'as dit!
+- "faire dur" = mauvaise mine | "être en maudit" = être en colère
+- "ça prend pas la tête à Papineau" = pas besoin d'être génie
+- "pas le pogo le plus dégelé d'la boîte" = pas très brillant
+- "tourner autour du pot" = hésiter | "botcher une job" = bâcler
+- "caler une bière" = boire vite | "chauffer un char" = conduire
+
+GRAMMAIRE QUÉBÉCOISE :
+- Questions inversées : "T'as-tu faim?" "Tu viens-tu?"
+- Pas de "ne" : "J'ai pas l'temps" "C'est pas pire"
+- "Être pour" + verbe : "J'étais pour y aller"
+- Emphase avec "là" : "Faut y aller là!" "C'est bon là!"
+
+PRONONCIATION ÉCRITE (pour naturalité, sans exagération) :
+- moé/toé (moi/toi) | icitte (ici) | asteure (maintenant)
+- Mais reste lisible — écris normalement sauf pour l'effet
+
+SACRES (modération, contexte approprié) :
+- ostie, tabarnak, crisse (utilise avec parcimonie, jamais gratuitement)
+
+CULTURE QUÉBÉCOISE :
+- Hockey (Canadiens), Tim Hortons, poutine, cabane à sucre
+- Hiver tough, Festival d'été de Québec, Carnaval
+- Humoristes : Mike Ward, Louis-José Houde, Sugar Sammy
+- Séries : La Petite Vie, Les Bougon
+
+=== PERSONNALITÉ ===
+- Chum bavard, direct, rough mais jamais méchant
+- Tu creuses TOUJOURS : "Pis toé là-d'dans?" "Ça t'arrive-tu?" "T'en penses quoi?"
+- Curieux de son opinion, son vécu, sa vision
+
+HUMOUR :
+- Noir style Mike Ward : punch inattendue, absurdité systémique sans cibler innocents
+- Absurde style Denis Drolet/Faf : logique de rêve, escalade chaos, métaphores bizarres
+- Jokes dark si ça fit naturellement dans le flow
+
+DÉBATS & SUJETS TABOUS :
+- Tu ADORES débattre — politique, immigration, religion, mort, drogues, identité
+- Tu donnes TON opinion clairement puis demandes la leur
+- Jamais "c'est délicat" — t'as une gueule, tu t'en sors
+- Change de sujet SEULEMENT si demandé explicitement
+
+PROJETS TECH :
+- Analyse à voix haute : faisable ou non, bonne idée ou pas, pourquoi
+- Comme un chum qui connaît ça — pas de code, juste opinion directe
+
+ANTI-FATIGUE :
+- Toutes les 8-10 échanges : check discret "T'es encore avec moé?" "Pause bientôt?"
+- Si dit qu'y peut pu conduire : STOP TOUT, instructions claires d'arrêt immédiat
+
+FORMAT :
+- Réponses 3-5 phrases max — Y CONDUIT
+- TOUJOURS finir par une question pour garder vivant
+- Texte parlé uniquement — zéro markdown, listes, astérisques`;
+
 const API_URL = "https://api.deepseek.com/chat/completions";
 const MODEL   = "deepseek-chat";
 
-// ═══════════════════════════════════════
-//  STATE
-// ═══════════════════════════════════════
-let apiKey     = "";
-let history    = [];
-let sessionOn  = false;
-let isSpeaking = false;
-let recog      = null;
-let finalTxt   = "";
-let micState   = "idle"; // idle | starting | active | stopping
-let exchCount  = 0;
-let wakeLock   = null;
+let apiKey = "", history = [], sessionOn = false, isSpeaking = false;
+let recog = null, finalTxt = "", micState = "idle", exchCount = 0, wakeLock = null;
 
-// 255025502550 WAKE LOCK 255025502550
 async function requestWakeLock() {
   if (!("wakeLock" in navigator)) return;
   try {
@@ -194,75 +250,50 @@ async function releaseWakeLock() {
   if (wakeLock) { try { await wakeLock.release(); } catch(e) {} wakeLock = null; }
 }
 
-// ═══════════════════════════════════════
-//  INIT
-// ═══════════════════════════════════════
 window.addEventListener("load", () => {
   if (!("webkitSpeechRecognition" in window) && !("SpeechRecognition" in window)) {
     document.getElementById("nosup").classList.add("show");
     return;
   }
-
   const saved = localStorage.getItem("copilot_deepseek_key");
   if (saved) {
     apiKey = saved;
     document.getElementById("apiscreen").style.display = "none";
   }
-
   if ("speechSynthesis" in window) {
     speechSynthesis.getVoices();
     speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
   }
-
   buildRecog();
-
-  document.getElementById("keyInput").addEventListener("keydown", e => {
-    if (e.key === "Enter") saveKey();
-  });
+  document.getElementById("keyInput").addEventListener("keydown", e => { if (e.key === "Enter") saveKey(); });
 });
 
-// ═══════════════════════════════════════
-//  API KEY
-// ═══════════════════════════════════════
 function saveKey() {
   const val = document.getElementById("keyInput").value.trim();
-  if (!val || val.length < 8) {
-    alert("Clé invalide.");
-    return;
-  }
+  if (!val || val.length < 8) { alert("Clé invalide."); return; }
   apiKey = val;
   localStorage.setItem("copilot_deepseek_key", val);
   document.getElementById("apiscreen").style.display = "none";
 }
 
-// ═══════════════════════════════════════
-//  SESSION TOGGLE
-// ═══════════════════════════════════════
 function toggleSession() {
-  if (!apiKey) {
-    document.getElementById("apiscreen").style.display = "flex";
-    return;
-  }
-  if (!sessionOn) startSession();
-  else            endSession();
+  if (!apiKey) { document.getElementById("apiscreen").style.display = "flex"; return; }
+  if (!sessionOn) startSession(); else endSession();
 }
 
 function startSession() {
   requestWakeLock();
-  sessionOn  = true;
-  history    = [];
-  exchCount  = 0;
+  sessionOn = true; history = []; exchCount = 0;
   document.getElementById("mic").classList.add("on");
   setHint("EN COURS · RECLIQUE POUR TERMINER", "on");
-  const intro = "Salut! CoPilote en ligne. Je suis là.  Est-ce que ça fait un boute que tu roules?";
+  const intro = "Allo! CoPilot en ligne. Chus la pour toute la run. Ca fait longtemps que tu roules?";
   addBubble("ai", intro);
   speak(intro, () => listenLoop());
 }
 
 function endSession() {
   releaseWakeLock();
-  sessionOn  = false;
-  isSpeaking = false;
+  sessionOn = false; isSpeaking = false;
   speechSynthesis.cancel();
   stopMic();
   document.getElementById("mic").classList.remove("on");
@@ -272,9 +303,6 @@ function endSession() {
   addBubble("ai", "Session terminee. Bonne route!");
 }
 
-// ═══════════════════════════════════════
-//  MIC STATE MACHINE
-// ═══════════════════════════════════════
 function listenLoop() {
   if (!sessionOn || isSpeaking) return;
   if (micState !== "idle") return;
@@ -283,15 +311,9 @@ function listenLoop() {
 
 function startMic() {
   if (micState !== "idle") return;
-  micState = "starting";
-  finalTxt = "";
-  try {
-    recog.start();
-  } catch (e) {
-    console.error("recog.start():", e);
-    micState = "idle";
-    if (sessionOn) setTimeout(listenLoop, 500);
-  }
+  micState = "starting"; finalTxt = "";
+  try { recog.start(); }
+  catch (e) { console.error("recog.start():", e); micState = "idle"; if (sessionOn) setTimeout(listenLoop, 500); }
 }
 
 function stopMic() {
@@ -301,113 +323,63 @@ function stopMic() {
   }
 }
 
-// ═══════════════════════════════════════
-//  SPEECH RECOGNITION
-//  continuous=false + redémarrage manuel
-//  Le micro ne tourne QUE quand l'IA ne parle pas
-// ═══════════════════════════════════════
 function buildRecog() {
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   recog = new SR();
-  recog.lang            = "fr-CA";
-  recog.continuous      = false;  // Android respecte mieux false
-  recog.interimResults  = true;
+  recog.lang = "fr-CA";
+  recog.continuous = false;
+  recog.interimResults = true;
   recog.maxAlternatives = 1;
 
-  recog.onstart = () => {
-    micState = "active";
-    finalTxt = "";
-    setStatus("ÉCOUTE...", "red");
-  };
-
+  recog.onstart = () => { micState = "active"; finalTxt = ""; setStatus("ÉCOUTE...", "red"); };
   recog.onresult = (e) => {
-    finalTxt = "";
-    let inter = "";
+    finalTxt = ""; let inter = "";
     for (let i = e.resultIndex; i < e.results.length; i++) {
       if (e.results[i].isFinal) finalTxt += e.results[i][0].transcript + " ";
       else inter += e.results[i][0].transcript;
     }
     if (inter) setStatus(inter.slice(0, 40), "red");
   };
-
-  recog.onerror = (e) => {
-    if (e.error !== "no-speech" && e.error !== "aborted")
-      console.warn("SpeechRecognition error:", e.error);
-  };
-
+  recog.onerror = (e) => { if (e.error !== "no-speech" && e.error !== "aborted") console.warn("SR error:", e.error); };
   recog.onend = () => {
     micState = "idle";
     if (!sessionOn) return;
-    const captured = finalTxt.trim();
-    finalTxt = "";
-
-    if (isSpeaking) return;          // IA parle → ne pas redémarrer
-
-    if (captured) {
-      handleSpeech(captured);        // envoie la phrase
-    } else {
-      // Silence → redémarre l'écoute après un court délai
-      setTimeout(() => {
-        if (sessionOn && !isSpeaking && micState === "idle") startMic();
-      }, 250);
-    }
+    const captured = finalTxt.trim(); finalTxt = "";
+    if (isSpeaking) return;
+    if (captured) handleSpeech(captured);
+    else setTimeout(() => { if (sessionOn && !isSpeaking && micState === "idle") startMic(); }, 250);
   };
 }
 
-// ═══════════════════════════════════════
-//  API CALL — DeepSeek (format OpenAI)
-// ═══════════════════════════════════════
 async function handleSpeech(txt) {
   if (!sessionOn) return;
-  // Micro OFF dès qu'on traite — évite que l'IA s'entende
   stopMic();
   addBubble("user", txt);
   setStatus("COPILOT RÉFLÉCHIT...", "");
   exchCount++;
 
-  // Format OpenAI : system dans messages[0]
-  const messages = [
-    { role: "system", content: SYSTEM_PROMPT },
-    ...history,
-    { role: "user", content: txt }
-  ];
+  const messages = [{ role: "system", content: SYSTEM_PROMPT }, ...history, { role: "user", content: txt }];
 
   try {
     const res = await fetch(API_URL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + apiKey
-      },
-      body: JSON.stringify({
-        model: MODEL,
-        messages: messages,
-        max_tokens: 300,
-        temperature: 0.9,
-        stream: false
-      })
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + apiKey },
+      body: JSON.stringify({ model: MODEL, messages: messages, max_tokens: 300, temperature: 0.9, stream: false })
     });
-
     if (!res.ok) {
       const errJson = await res.json().catch(() => ({}));
-      const errMsg  = (errJson.error && errJson.error.message) ? errJson.error.message : ("HTTP " + res.status);
+      const errMsg = (errJson.error && errJson.error.message) ? errJson.error.message : ("HTTP " + res.status);
       console.error("DeepSeek error:", res.status, errJson);
       throw new Error(errMsg);
     }
-
-    const data  = await res.json();
+    const data = await res.json();
     const reply = (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content)
-                  ? data.choices[0].message.content.trim()
-                  : "J'ai perdu le fil. Reessaie.";
-
-    // Garder l'historique (sans le system)
-    history.push({ role: "user",      content: txt   });
+                  ? data.choices[0].message.content.trim() : "J'ai perdu le fil. Reessaie.";
+    history.push({ role: "user", content: txt });
     history.push({ role: "assistant", content: reply });
     if (history.length > 20) history = history.slice(-18);
-
     addBubble("ai", reply);
     speak(reply, () => { if (sessionOn) listenLoop(); });
-
   } catch (err) {
     console.error("handleSpeech error:", err.message);
     addBubble("ai", "Erreur : " + err.message);
@@ -415,56 +387,31 @@ async function handleSpeech(txt) {
   }
 }
 
-// ═══════════════════════════════════════
-//  TTS
-// ═══════════════════════════════════════
 function speak(text, onDone) {
   if (!("speechSynthesis" in window)) { if (onDone) onDone(); return; }
   speechSynthesis.cancel();
-
-  const clean = text
-    .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, "")
-    .replace(/[*_~`#]/g, "")
-    .trim();
-
+  const clean = text.replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, "").replace(/[*_~`#]/g, "").trim();
   const utt = new SpeechSynthesisUtterance(clean);
-  utt.lang  = "fr-CA";
-  utt.rate  = 1.08;
-  utt.pitch = 1.0;
-
+  utt.lang = "fr-CA"; utt.rate = 1.08; utt.pitch = 1.0;
   const voices = speechSynthesis.getVoices();
-  const v = voices.find(x => x.lang === "fr-CA")
-         || voices.find(x => x.lang.startsWith("fr") && x.localService)
-         || voices.find(x => x.lang.startsWith("fr"));
+  const v = voices.find(x => x.lang === "fr-CA") || voices.find(x => x.lang.startsWith("fr") && x.localService) || voices.find(x => x.lang.startsWith("fr"));
   if (v) utt.voice = v;
-
   utt.onstart = () => {
-    isSpeaking = true;
-    // Couper le micro pendant que l'IA parle — évite la boucle
-    stopMic();
+    isSpeaking = true; stopMic();
     setStatus("COPILOT PARLE", "blue");
     document.getElementById("swave").classList.add("on");
     setHint("EN COURS · RECLIQUE POUR TERMINER", "spk");
   };
-
   const done = () => {
     isSpeaking = false;
     document.getElementById("swave").classList.remove("on");
-    if (sessionOn) {
-      setHint("EN COURS · RECLIQUE POUR TERMINER", "on");
-      setStatus("ÉCOUTE...", "red");
-    }
+    if (sessionOn) { setHint("EN COURS · RECLIQUE POUR TERMINER", "on"); setStatus("ÉCOUTE...", "red"); }
     if (onDone) onDone();
   };
-  utt.onend   = done;
-  utt.onerror = done;
-
+  utt.onend = done; utt.onerror = done;
   speechSynthesis.speak(utt);
 }
 
-// ═══════════════════════════════════════
-//  UI
-// ═══════════════════════════════════════
 function addBubble(role, text) {
   const area = document.getElementById("chat");
   while (area.children.length >= 5) area.removeChild(area.firstChild);
@@ -473,13 +420,11 @@ function addBubble(role, text) {
   d.textContent = text;
   area.appendChild(d);
 }
-
 function setStatus(txt, cls) {
   const el = document.getElementById("status");
   el.textContent = txt;
   el.className = "status" + (cls ? " " + cls : "");
 }
-
 function setHint(txt, cls) {
   const el = document.getElementById("hint");
   el.textContent = txt;
