@@ -286,7 +286,7 @@ function startSession() {
   sessionOn = true; history = []; exchCount = 0;
   document.getElementById("mic").classList.add("on");
   setHint("EN COURS · RECLIQUE POUR TERMINER", "on");
-  const intro = "Allo! CoPilot en ligne. Chus la pour toute la run. Ca fait longtemps que tu roules?";
+  const intro = "Allo! CoPilot en ligne. Chus la avec toi. Est-ce que ça fait longtemps que tu roules?";
   addBubble("ai", intro);
   speak(intro, () => listenLoop());
 }
