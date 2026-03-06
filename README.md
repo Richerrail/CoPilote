@@ -50,6 +50,8 @@ eas build --platform android --profile preview
 
 Ça compile dans le cloud, puis tu reçois un lien pour télécharger l'APK sur ton cell.
 
+Si tu veux tester toute suite sans avoir a compiler l'APK est disponible dans release en version beta!!!!
+
 ---
 
 ## Problèmes courants
