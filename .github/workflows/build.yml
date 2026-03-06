@@ -15,21 +15,18 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'none'                # ← clé pour éviter l'erreur lock file
+          # Pas de cache: ici → ça passe !
 
       - name: Setup EAS
         uses: expo/expo-github-action@main
         with:
           eas-version: latest
-          packager: npm                # ← contourne le bug Yarn de l'action EAS
+          packager: npm                # contourne le bug Yarn EAS
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Install dependencies
-        run: yarn install --immutable  # ou npm ci / pnpm install selon votre cas
-        # Si pas de lock file → utilisez yarn install (sans --immutable) ou npm install
-      
-      - name: Install dependencies
-        run: npm install
+        run: yarn install              # sans --immutable si pas de lock file
+        # Ou npm install / yarn install selon votre setup
       
       - name: Build Android APK
         run: eas build --platform android --profile preview --non-interactive --no-wait
