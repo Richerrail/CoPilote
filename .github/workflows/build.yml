@@ -11,17 +11,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          node-version: 20             # ou 22
-          cache: 'yarn'                # ou 'npm' si vous switch
+          node-version: 20
+          cache: 'none'                # ← clé pour éviter l'erreur lock file
 
       - name: Setup EAS
         uses: expo/expo-github-action@main
         with:
           eas-version: latest
-          packager: npm
+          packager: npm                # ← contourne le bug Yarn de l'action EAS
           token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        run: yarn install --immutable  # ou npm ci / pnpm install selon votre cas
+        # Si pas de lock file → utilisez yarn install (sans --immutable) ou npm install
       
       - name: Install dependencies
         run: npm install
