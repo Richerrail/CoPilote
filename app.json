@@ -1,11 +1,13 @@
 {
   "expo": {
-    "name": "CoPilot",
-    "slug": "copilot-app",
+    "name": "CoPilote",
+    "slug": "copilote",
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "dark",
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "android": {
       "permissions": [
         "android.permission.RECORD_AUDIO",
@@ -15,7 +17,19 @@
         "android.permission.WAKE_LOCK",
         "android.permission.INTERNET"
       ],
-      "package": "com.copilot.app"
-    }
+      "package": "com.copilote.app"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "aa5cce46-ba5c-4efe-a2a8-ecd8053bd232"
+      }
+    },
+    "ios": {
+      "bundleIdentifier": "com.copilote.app",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "owner": "richerrail"
   }
 }

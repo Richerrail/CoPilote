@@ -13,7 +13,7 @@ export default function App() {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>CoPilot</title>
+<title>CoPilote</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
@@ -113,7 +113,7 @@ body::after {
 
 <div class="apiscreen" id="apiscreen">
   <h2>Clé API DeepSeek</h2>
-  <p>Entre ta clé pour démarrer CoPilot.<br>Sauvegardée sur ton appareil.</p>
+  <p>Entre ta clé pour démarrer CoPilote.<br>Sauvegardée sur ton appareil.</p>
   <input type="password" id="keyInput" placeholder="sk-..." autocomplete="off" />
   <button onclick="saveKey()">DÉMARRER</button>
   <p class="link">Clé gratuite sur <a href="https://platform.deepseek.com" target="_blank">platform.deepseek.com</a></p>
@@ -122,7 +122,7 @@ body::after {
 <div class="screen">
   <div class="top">
     <div class="dot"></div>
-    <span class="top-lbl">CoPilot · Mode Route</span>
+    <span class="top-lbl">CoPilote · Mode Route</span>
   </div>
 
   <div class="chat" id="chat"></div>
@@ -152,7 +152,7 @@ body::after {
 </div>
 
 <script>
-const SYSTEM_PROMPT = \`Tu es CoPilot, un vrai compagnon de route québécois pure laine. Tu roules avec le conducteur dans son char. Ton job : le garder ÉVEILLÉ par la conversation.
+const SYSTEM_PROMPT = \`Tu es CoPilote, un vrai compagnon de route québécois pure laine. Tu roules avec le conducteur dans son char. Ton job : le garder ÉVEILLÉ par la conversation.
 
 === LANGUE QUÉBÉCOISE AUTHENTIQUE ===
 
@@ -222,7 +222,7 @@ window.addEventListener("load", () => {
     alert("Reconnaissance vocale non supportée");
     return;
   }
-  const saved = localStorage.getItem("copilot_deepseek_key");
+  const saved = localStorage.getItem("copilote_deepseek_key");
   if (saved) {
     apiKey = saved;
     document.getElementById("apiscreen").style.display = "none";
@@ -239,7 +239,7 @@ function saveKey() {
   const val = document.getElementById("keyInput").value.trim();
   if (!val || val.length < 8) { alert("Clé invalide."); return; }
   apiKey = val;
-  localStorage.setItem("copilot_deepseek_key", val);
+  localStorage.setItem("copilote_deepseek_key", val);
   document.getElementById("apiscreen").style.display = "none";
 }
 
@@ -252,7 +252,7 @@ function startSession() {
   sessionOn = true; history = []; exchCount = 0;
   document.getElementById("mic").classList.add("on");
   setHint("EN COURS · RECLIQUE POUR TERMINER", "on");
-  const intro = "Salut! Chu CoPilot. On jase pendant que tu roules?";
+  const intro = "Salut! Chu CoPilote. On jase pendant que tu roules?";
   addBubble("ai", intro);
   speak(intro, () => listenLoop());
 }
@@ -320,7 +320,7 @@ async function handleSpeech(txt) {
   if (!sessionOn) return;
   stopMic();
   addBubble("user", txt);
-  setStatus("COPILOT RÉFLÉCHIT...", "");
+  setStatus("COPILOTE RÉFLÉCHIT...", "");
   exchCount++;
 
   const messages = [{ role: "system", content: SYSTEM_PROMPT }, ...history, { role: "user", content: txt }];
@@ -362,7 +362,7 @@ function speak(text, onDone) {
   if (v) utt.voice = v;
   utt.onstart = () => {
     isSpeaking = true; stopMic();
-    setStatus("COPILOT PARLE", "blue");
+    setStatus("COPILOTE PARLE", "blue");
     document.getElementById("swave").classList.add("on");
     setHint("EN COURS · RECLIQUE POUR TERMINER", "spk");
   };
